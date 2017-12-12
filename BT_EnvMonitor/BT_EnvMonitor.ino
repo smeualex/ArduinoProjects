@@ -47,7 +47,8 @@ uint32_t RTC_CurrentReading;
 const uint32_t BME_READ_INTERVAL = 5;
 const unsigned int LCD_SWITCH_INTERVAL = 10;
 
-const char* months[12] = { "Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+const char*    months[12]   = { "Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+const uint16_t montDays[12] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 SoftwareSerial BTSerial(10, 11);
 
@@ -231,6 +232,41 @@ void BME680_DisplayData()
 #endif
 }
 
+bool validateDate(const char *date, const char *time)
+{
+    // Format sample: Mar 11 2017
+    // Format sample: 21:27:29
+    uint32_t year;
+    char month[4];
+    uint16_t day;
+    uint16_t h, m, s;
+
+    char tmp[5];
+
+    // month
+    strncpy(month, date, 3);
+    int i;
+    for (i = 0; i < 12; i++)
+        if (!strncmp(months[i], month, 3))
+            break;
+    if (i > 11)
+        return false;
+
+    // day
+    strncpy(tmp, &date[4], 2);
+    day = atoi(tmp);
+
+    // year
+    strncpy(tmp, &date[7], 4);
+    year = atoi(tmp);
+
+    if (day < 0 || day > 31 || year < 2015)
+        return false;
+
+    // todo...
+    
+}
+
 void BT_CheckForData()
 {
     if (BTSerial.available())
@@ -293,10 +329,8 @@ void BT_CheckForData()
             Serial.println(time);
 
             /* VALIDATE THE DATA RECEIVED */
-            // TODO: validate received data. do not adjust if not valid!!!
-
-            rtc.adjust(DateTime(date, time));
-            //rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0))
+            if( true == validateDate(date, time))
+                rtc.adjust(DateTime(date, time));
         }
     }
 }
