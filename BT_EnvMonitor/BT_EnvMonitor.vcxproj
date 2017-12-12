@@ -80,6 +80,7 @@
     <None Include="BT_EnvMonitor.ino">
       <FileType>CppCode</FileType>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.BT_EnvMonitor.vsarduino.h" />
