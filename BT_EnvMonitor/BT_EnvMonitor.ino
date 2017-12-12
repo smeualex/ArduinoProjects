@@ -54,6 +54,7 @@ SoftwareSerial BTSerial(10, 11);
 /* Bluetooth commands   */
 #define BT_GET_DATE     '1'
 #define BT_GET_ENVDATA  '2'
+#define BT_SET_RTC_TIME '3'
 
 void _callFunctionOnTimer(void(*fun)(void), const uint32_t timerValue, uint32_t *timer);
 
@@ -265,6 +266,37 @@ void BT_CheckForData()
             BTSerial.print("Pressure:    "); BTSerial.print(bme.pressure / 100.0); BTSerial.println();
             BTSerial.print("Altitude:    "); BTSerial.print(altitude);
             BTSerial.println("#");
+        }
+        else if (btData == BT_SET_RTC_TIME)
+        {
+            // Request format: 
+            //          3Dec 26 2017#15:21:23#
+
+            char date[12];
+            char time[9];
+            uint16_t recvIdx = 0;
+
+            // get the date
+            recvIdx = BTSerial.readBytesUntil('#', date, sizeof(date));
+            date[recvIdx] = 0;
+
+            Serial.print(" > SETTIME Received date: "); Serial.print(recvIdx);
+            Serial.print(" bytes -");
+            Serial.println(date);
+
+            // get the time
+            recvIdx = BTSerial.readBytesUntil('#', time, sizeof(time));
+            time[recvIdx] = 0;
+
+            Serial.print(" > SETTIME Received time: "); Serial.print(recvIdx);
+            Serial.print(" bytes -");
+            Serial.println(time);
+
+            /* VALIDATE THE DATA RECEIVED */
+            // TODO: validate received data. do not adjust if not valid!!!
+
+            rtc.adjust(DateTime(date, time));
+            //rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0))
         }
     }
 }
