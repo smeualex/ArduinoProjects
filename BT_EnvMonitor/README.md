@@ -24,6 +24,11 @@ HC-05 sends data via serial communication. I use SoftwareSerial library to keep 
 | Rx    | Pin 10  |
 | Tx    | Pin 11  |
 
+## Schematic
+[logo]
+
+[logo]: https://github.com/smeualex/ArduinoProjects/tree/master/BT_EnvMonitor/res/EnvMonitor-BME680_bb.png ""
+
 ## Bluetooth Commands
 
 #### 1. Get date
