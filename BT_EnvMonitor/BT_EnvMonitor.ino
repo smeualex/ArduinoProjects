@@ -21,6 +21,7 @@
 #include "RTClib.h"
 #include "SoftwareSerial.h"
 #include "Adafruit_BME680.h"
+#include "strings.h"
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define BME680_I2C_ADDR       0x76
@@ -48,7 +49,7 @@ const uint32_t BME_READ_INTERVAL = 5;
 const unsigned int LCD_SWITCH_INTERVAL = 10;
 
 const char*    months[12]   = { "Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-const uint16_t montDays[12] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+const uint16_t monthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 SoftwareSerial BTSerial(10, 11);
 
@@ -232,6 +233,11 @@ void BME680_DisplayData()
 #endif
 }
 
+inline bool isLeapYear(int year)
+{
+    return(year % 100 != 0 && year % 4 == 0) || (year % 400 == 0);
+}
+
 bool validateDate(const char *date, const char *time)
 {
     // Format sample: Mar 11 2017
@@ -243,13 +249,14 @@ bool validateDate(const char *date, const char *time)
 
     char tmp[5];
 
+    /************************* DATE VALIDATION *************************/
     // month
     strncpy(month, date, 3);
-    int i;
-    for (i = 0; i < 12; i++)
-        if (!strncmp(months[i], month, 3))
+    int monthIndex;
+    for (monthIndex = 0; monthIndex < 12; monthIndex++)
+        if (!strncmp(months[monthIndex], month, 3))
             break;
-    if (i > 11)
+    if (monthIndex > 11)
         return false;
 
     // day
@@ -260,9 +267,65 @@ bool validateDate(const char *date, const char *time)
     strncpy(tmp, &date[7], 4);
     year = atoi(tmp);
 
-    if (day < 0 || day > 31 || year < 2015)
+    if (day < 0 || day > 31 ||
+        monthIndex < 0 || monthIndex > 11 ||
+        year < 2015)
+    {
+        _printPGMString(dateGenErrorMsg);
         return false;
+    }
+    
+    // setup february days
+    if (isLeapYear(year))
+    {
+        if (monthIndex == 1 && day > 29)
+        {
+            _printPGMString(dateGenErrorMsg);
+            return false;
+        }
+    }
+    else
+    {
+        switch (monthIndex)
+        {
+            // february already done before this
+        case 1:
+            break;
+            // 31 day months
+        case 0:
+        case 2:
+        case 4:
+        case 6:
+        case 7:
+        case 9:
+        case 11:
+            if (day > 21)
+            {
+                _printPGMString(dateGenErrorMsg);
+                return false;
+            }
+            break;
+            // 30 day months
+        default:
+            if (day > 30)
+            {
+                _printPGMString(dateGenErrorMsg);
+                return false;
+            }
+        }
 
+        /************************* TIME VALIDATION *************************/
+        if (h < 0 || h > 23 ||
+            m < 0 || m > 59 ||
+            s < 0 || s > 59)
+        {
+            _printPGMString(timeGenErrorMsg);
+            return false;
+        }
+
+        _printPGMString(dateTimeValid);
+        return true;
+    }
     // todo...
     
 }
@@ -277,15 +340,14 @@ void BT_CheckForData()
         {
             DateTime now = rtc.now();
 
-            BTSerial.print("DATE:");
-            BTSerial.print("h="); BTSerial.print(now.hour()); BTSerial.print(";");
-            BTSerial.print("m="); BTSerial.print(now.minute()); BTSerial.print(";");
-            BTSerial.print("s="); BTSerial.print(now.second()); BTSerial.print(";");
-
-            BTSerial.print("y="); BTSerial.print(now.year()); BTSerial.print(";");
-            BTSerial.print("m="); BTSerial.print(now.month()); BTSerial.print(";");
-            BTSerial.print("d="); BTSerial.print(now.day()); BTSerial.print(";");
-
+            /* DATE */
+            BTSerial.print(now.day());   BTSerial.print("-");
+            BTSerial.print(now.month()); BTSerial.print("-");
+            BTSerial.print(now.year());  BTSerial.print("  ");
+            /* TIME */
+            BTSerial.print(now.hour());   BTSerial.print(":");
+            BTSerial.print(now.minute()); BTSerial.print(":");
+            BTSerial.print(now.second()); 
             BTSerial.println("#");
         }
         else if (btData == BT_GET_ENVDATA)
@@ -297,8 +359,8 @@ void BT_CheckForData()
             }
             float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
-            BTSerial.print("Temperature: "); BTSerial.print(bme.temperature);    BTSerial.println();
-            BTSerial.print("Humidity:    "); BTSerial.print(bme.humidity);       BTSerial.println();
+            BTSerial.print("Temperature: "); BTSerial.print(bme.temperature);      BTSerial.println();
+            BTSerial.print("Humidity:    "); BTSerial.print(bme.humidity);         BTSerial.println();
             BTSerial.print("Pressure:    "); BTSerial.print(bme.pressure / 100.0); BTSerial.println();
             BTSerial.print("Altitude:    "); BTSerial.print(altitude);
             BTSerial.println("#");
@@ -329,7 +391,7 @@ void BT_CheckForData()
             Serial.println(time);
 
             /* VALIDATE THE DATA RECEIVED */
-            if( true == validateDate(date, time))
+            if (true == validateDate(date, time))
                 rtc.adjust(DateTime(date, time));
         }
     }
