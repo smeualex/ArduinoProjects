@@ -1,16 +1,12 @@
 #pragma once
 
 #include "Point.h"
-
-enum moveDirection {
-    UP = 0,
-    RIGHT,
-    DOWN,
-    LEFT,
-    STILL
-};
+#include "Board.h"
+#include "movement.h"
 
 class Snake {
+    Board board;
+
     Point head;
     Point segments[64];
     byte  length;

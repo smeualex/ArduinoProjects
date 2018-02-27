@@ -2,6 +2,7 @@
 
 Snake::Snake()
 {
+    //board = _board;
     resetSnake();
 }
 
@@ -51,27 +52,27 @@ void Snake::moveSnake(moveDirection dir)
     direction = dir;
     switch (dir)
     {
-    case UP:
+    case moveDirection::UP:
         head.y++;
         if (head.y > 7)
             head.y = 0;
         break;
 
-    case DOWN:
+    case moveDirection::DOWN:
         if (head.y > 0)
             head.y--;
         else
             head.y = 7;
         break;
 
-    case RIGHT:
+    case moveDirection::RIGHT:
         if (head.x > 0)
             head.x--;
         else
             head.x = 7;
         break;
 
-    case LEFT:
+    case moveDirection::LEFT:
         head.x++;
         if (head.x > 7)
             head.x = 0;

@@ -38,7 +38,7 @@ int gameSpeed = 150;
 DebouncedButton resetButton(JOYSTICK_SW, CB_startStopGame, DEBOUNCING_DELAY);
 
 byte _led[8];
-LedControl lc = LedControl(DIN, CLK, CS, 2);
+LedControl lc = LedControl(DIN, CLK, CS, 1);
 
 int potValue;
 int prevPotValue;
@@ -85,7 +85,7 @@ void loop()
     {
         /* GET DIRECTION AND MOVE SNAKE */
         snake.moveSnake(getDirection(analogRead(JOYSTICK_X),
-            analogRead(JOYSTICK_Y)));
+                                     analogRead(JOYSTICK_Y)));
         /* IS WE EATING A COOKIE?!      */
         if (!snake.eatsCookie(foodPosition))
             snake.removeLastSegment();

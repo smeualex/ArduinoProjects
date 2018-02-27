@@ -80,12 +80,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Board.h" />
     <ClInclude Include="DebouncedButton.h" />
+    <ClInclude Include="movement.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="__vm\.snake3.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="DebouncedButton.cpp" />
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>

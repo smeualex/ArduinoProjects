@@ -15,8 +15,3 @@ inline bool Board::isPositionInside(char x, char y)
 {
     return ( (0<=x && x<=w) && (0 <= y && y <= h) );
 }
-
-void Board::resetBoard()
-{ 
-
-}
