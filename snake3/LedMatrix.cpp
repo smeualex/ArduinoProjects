@@ -31,6 +31,11 @@ void LedMatrix::display(Snake& snake, Point& cookie)
 {
     resetLedState();
     updateLedState(snake, cookie);
+    display();
+}
+
+void LedMatrix::display()
+{
     for (int d = 0; d < getDeviceCount(); d++)
     {
         for (int i = 0; i < 8; i++)
@@ -39,4 +44,9 @@ void LedMatrix::display(Snake& snake, Point& cookie)
             delayMicroseconds(50);
         }
     }
+}
+void LedMatrix::invertLeds()
+{
+    for (int i = 0; i < 8; i++)
+        leds[i] ^= B11111111;
 }

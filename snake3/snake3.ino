@@ -18,6 +18,12 @@ Components:
 
     Program snake3 size: 8,268 bytes (used 29% of a 28,672 byte maximum) (9.77 secs)
     Minimum Memory Usage: 496 bytes (19% of a 2560 byte maximum)
+
+    Program snake3 size: 8,614 bytes (used 30% of a 28,672 byte maximum) (2.93 secs)
+    Minimum Memory Usage: 529 bytes (21% of a 2560 byte maximum)
+
+    Program snake3 size: 8,712 bytes (used 30% of a 28,672 byte maximum) (2.52 secs)
+    Minimum Memory Usage: 529 bytes (21% of a 2560 byte maximum)
 */
 
 #include "globalConstants.h"
@@ -25,17 +31,23 @@ Components:
 #include "Snake.h"
 #include "Joystick.h"
 #include "LedMatrix.h"
+#include "TimedAction.h"
 
 Snake snake;
 Point cookie;
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
 Joystick  joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
 
-
-int gameSpeed = 150;
-
+TimedAction checkPot_action  (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
+TimedAction joystickSW_action(JOYSTICK_SW_CHECK_DELAY, joystickSwCheck);
+TimedAction gameStep_action  (GAME_SPEED, performGameStep);
 
 boolean gameRunning = true;
+
+TimedAction t1(100, f1);
+TimedAction t2(110, f2);
+TimedAction t3(120, f3);
+TimedAction t4(130, f4);
 
 void setup()
 {
@@ -47,11 +59,37 @@ void setup()
     spawnFood();
 }
 
+
 void loop()
 {
-    ledMatrix.setLedIntensity(map(analogRead(BRIGHTNESS_CONTROLL_POT), 0, 1023, 1, 15));
-    joystick.checkSwitch();
+    checkPot_action.check();
+    joystickSW_action.check();
 
+    if (gameRunning)
+    {
+        gameStep_action.check();
+    }
+    else
+    {
+        t1.check();
+        t2.check();
+        t3.check();
+        t4.check();
+    }
+}
+
+void potentiometerCheck()
+{
+    ledMatrix.setLedIntensity(map(analogRead(BRIGHTNESS_CONTROLL_POT), 0, 1023, 1, 15));
+}
+
+void joystickSwCheck()
+{
+    joystick.checkSwitch();
+}
+
+void performGameStep()
+{
     if (gameRunning)
     {
         /* GET DIRECTION AND MOVE SNAKE */
@@ -71,7 +109,6 @@ void loop()
             flashEndAnimation();
         }
     }
-    delay(gameSpeed);
 }
 
 void CB_startStopGame()
@@ -101,5 +138,33 @@ void spawnFood()
 
 void flashEndAnimation()
 {
-    // TO DO : implement end game animation
+    for (int r = 0; r < 7; r++)
+    {
+        for (int i = 0; i < snake.getLength(); i++)
+            ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 0);
+        delay(200);
+        for (int i = 0; i < snake.getLength(); i++)
+            ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 1);
+        delay(200);
+    }
+}
+
+void f1()
+{
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
+}
+
+void f2()
+{
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
+}
+
+void f3()
+{
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
+}
+
+void f4()
+{
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }

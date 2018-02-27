@@ -15,6 +15,9 @@ public:
 
     void updateLedState(Snake& snake, Point& cookie);
     void display(Snake& snake, Point& cookie);
+    void display();
     void resetLedState(){ memset(leds, 0, sizeof(leds)); }
+
+    void invertLeds();
 };
 

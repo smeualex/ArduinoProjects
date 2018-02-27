@@ -88,6 +88,7 @@
     <ClInclude Include="movement.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Snake.h" />
+    <ClInclude Include="TimedAction.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="__vm\.snake3.vsarduino.h" />
   </ItemGroup>
@@ -97,6 +98,7 @@
     <ClCompile Include="Joystick.cpp" />
     <ClCompile Include="LedMatrix.cpp" />
     <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="TimedAction.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
