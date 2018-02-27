@@ -25,7 +25,6 @@ Components:
 #include "Snake.h"
 #include "Joystick.h"
 #include "LedMatrix.h"
-#include "DebouncedButton.h"
 
 Snake snake;
 Point cookie;
@@ -44,7 +43,7 @@ void setup()
     pinMode(BRIGHTNESS_CONTROLL_POT, INPUT);
     // init the led displays
     ledMatrix.startUp();
-
+    //
     spawnFood();
 }
 
@@ -58,10 +57,10 @@ void loop()
         /* GET DIRECTION AND MOVE SNAKE */
         snake.moveSnake(joystick.getDirection());
         /* IS WE EATING A COOKIE?!      */
-        if (!snake.eatsCookie(cookie))
-            snake.removeLastSegment();
-        else
+        if (snake.eatsCookie(cookie))
             spawnFood();
+        else
+            snake.removeLastSegment();
         snake.addNewSegment();
         /* UPDATE LED DISPLAY           */
         ledMatrix.display(snake, cookie);
@@ -99,25 +98,6 @@ void spawnFood()
         cookie.y = random(8);
     } while (snake.segmentExists(cookie));
 }
-
-void print_binary(int v, int bits)
-{
-    int mask = 0;
-
-    for (int n = 1; n <= bits; n++)
-        mask = (mask << 1) | 0x0001;
-    v = v & mask;
-
-    while (bits)
-    {
-        if (v & (0x0001 << bits - 1))
-            Serial.print("1");
-        else
-            Serial.print("0");
-        --bits;
-    }
-}
-
 
 void flashEndAnimation()
 {
