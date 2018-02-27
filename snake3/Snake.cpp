@@ -2,7 +2,6 @@
 
 Snake::Snake()
 {
-    //board = _board;
     resetSnake();
 }
 
@@ -49,7 +48,20 @@ boolean Snake::segmentExists(Point p)
 
 void Snake::moveSnake(moveDirection dir)
 { 
-    direction = dir;
+    /* CHECK FOR OPPOSITE DIRECTIONS OR CURRENT */
+    if ( ( dir == moveDirection::LEFT  && direction == moveDirection::RIGHT ) ||
+         ( dir == moveDirection::RIGHT && direction == moveDirection::LEFT  ) ||
+         ( dir == moveDirection::UP    && direction == moveDirection::DOWN  ) ||
+         ( dir == moveDirection::DOWN  && direction == moveDirection::UP    ) ||
+         ( dir == moveDirection::KEEP_CURRENT ) )
+    {
+        dir = direction;
+    }
+    else
+    {
+        direction = dir;
+    }
+
     switch (dir)
     {
     case moveDirection::UP:

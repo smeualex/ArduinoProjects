@@ -7,7 +7,7 @@ private:
     unsigned char idx;
     unsigned char w;
     unsigned char h;
-    Point foodPosition; // TODO: move from here
+    Point cookie; // TODO: move from here
 
 public:
     Board()

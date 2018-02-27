@@ -5,5 +5,6 @@ enum moveDirection {
     RIGHT,
     DOWN,
     LEFT,
+    KEEP_CURRENT,
     STILL
 };

@@ -1,12 +1,9 @@
 #pragma once
 
 #include "Point.h"
-#include "Board.h"
 #include "movement.h"
 
 class Snake {
-    Board board;
-
     Point head;
     Point segments[64];
     byte  length;

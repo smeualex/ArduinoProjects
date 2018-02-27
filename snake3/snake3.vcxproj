@@ -82,6 +82,9 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="DebouncedButton.h" />
+    <ClInclude Include="globalConstants.h" />
+    <ClInclude Include="Joystick.h" />
+    <ClInclude Include="LedMatrix.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Snake.h" />
@@ -90,6 +93,8 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="DebouncedButton.cpp" />
+    <ClCompile Include="Joystick.cpp" />
+    <ClCompile Include="LedMatrix.cpp" />
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <PropertyGroup>
