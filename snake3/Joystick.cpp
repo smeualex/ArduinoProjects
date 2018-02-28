@@ -3,34 +3,28 @@
 
 moveDirection Joystick::getDirection()
 {
-    int joyX = analogRead(pin_X);
-    int joyY = analogRead(pin_Y);
+    int x_raw = analogRead(pin_X);
+    int y_raw = analogRead(pin_Y);
+    int x = map(x_raw, 0, 1023, 1, 11);
+    int y = map(y_raw, 0, 1023, 1, 11);
 
-    if (joyX > 498 && joyX < 520 &&
-        joyY > 498 && joyY < 520)
+    char logBuf[256];
+    sprintf(logBuf, "X: %4d - %2d  |  Y: %4d - %2d",
+        x_raw, x, y_raw, y);
+    Serial.println(logBuf);
+
+    if( x == 5 && (y ==5 || y == 6))
         return moveDirection::KEEP_CURRENT;
 
-    if (joyX > 520 && joyX <= 1024 &&
-        joyY > 350 && joyY < 730)
-    {
+    if( x > 5 && (1 <= y && y <= 11))
         return moveDirection::RIGHT;
-    }
 
-    if (joyX >= 0 && joyX < 500 &&
-        joyY > 350 && joyY < 731)
-    {
+    if( x < 5 && (1 <= y && y <= 11))
         return moveDirection::LEFT;
-    }
 
-    if (joyX > 495 && joyX < 900 &&
-        joyY >= 0 && joyY < 520)
-    {
-        return moveDirection::UP;
-    }
-
-    if (joyX > 350 && joyX < 730 &&
-        joyY > 520 && joyY <= 1024)
-    {
+    if( y > 6 && (0 <= x && x <= 9))
         return moveDirection::DOWN;
-    }
+
+    if (y < 5 && (0 <= x && x <= 9))
+        return moveDirection::UP;
 }
