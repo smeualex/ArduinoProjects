@@ -7,7 +7,7 @@ Snake::Snake()
 
 void Snake::resetSnake()
 {
-    direction = (moveDirection)random(4);
+    currentDirection = (moveDirection)random(4);
     resetSnakeSegments();
     head =  Point (random(8), random(8));
     length = 1;
@@ -50,22 +50,29 @@ boolean Snake::segmentExists(Point p)
 void Snake::moveSnake(moveDirection dir)
 { 
     /* CHECK FOR OPPOSITE DIRECTIONS OR CURRENT */
-    if ( ( length > 1 &&
-          ( dir == moveDirection::LEFT  && direction == moveDirection::RIGHT )  ||
-          ( dir == moveDirection::RIGHT && direction == moveDirection::LEFT  )  ||
-          ( dir == moveDirection::UP    && direction == moveDirection::DOWN  )  ||
-          ( dir == moveDirection::DOWN  && direction == moveDirection::UP    ) ) 
-        ||
-          ( dir == moveDirection::KEEP_CURRENT ) )
+    if (length == 1)
     {
-        dir = direction;
+        if( dir != currentDirection && dir != moveDirection::KEEP_CURRENT)
+            currentDirection = dir;
     }
     else
     {
-        direction = dir;
+        if ((dir == moveDirection::LEFT  && currentDirection == moveDirection::RIGHT) ||
+            (dir == moveDirection::RIGHT && currentDirection == moveDirection::LEFT) ||
+            (dir == moveDirection::UP    && currentDirection == moveDirection::DOWN) ||
+            (dir == moveDirection::DOWN  && currentDirection == moveDirection::UP)
+            ||
+            (dir == moveDirection::KEEP_CURRENT))
+        {
+            dir = currentDirection;
+        }
+        else
+        {
+            currentDirection = dir;
+        }
     }
 
-    switch (dir)
+    switch (currentDirection)
     {
     case moveDirection::UP:
         head.y++;

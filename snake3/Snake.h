@@ -7,7 +7,7 @@ class Snake {
     Point head;
     Point segments[64];
     byte  length;
-    moveDirection direction;
+    moveDirection currentDirection;
 
 public:
     Snake();
@@ -27,7 +27,7 @@ public:
 
     Point getHead()   { return head; }
     byte  getLength() { return length; }
-    moveDirection getCurrentMovingDirection() { return direction; }
+    moveDirection getCurrentMovingDirection() { return currentDirection; }
 
 
     Point& operator[] (int i)
