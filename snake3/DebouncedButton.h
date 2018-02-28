@@ -1,5 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////////////
+// Author       : smeua
+// Date         : 25.02.20183
+// Version      : 1.00
+// Description  : Arduino helper library to callback a function when a button is pressed
+////////////////////////////////////////////////////////////////////////////////////////
+
 #pragma once
 #include "Arduino.h"
+
 class DebouncedButton {
 private:
     int pinNumber;
@@ -11,8 +19,20 @@ private:
     unsigned long debounceDelay;    // the debounce time; increase if the output flickers
     bool buttonHandled;
 
+    void setPinMode(int _pinMode)
+    {
+        if(_pinMode == INPUT || _pinMode == OUTPUT || _pinMode == INPUT_PULLUP)
+            pinMode(pinNumber, _pinMode);
+    }
+
+    void setPinState(int state)
+    {
+        if (state == HIGH || state == LOW)
+            digitalWrite(pinNumber, state);
+    }
+
 public:
-    DebouncedButton(int _pinNumber, void(*_f)(), int _delay)
+    DebouncedButton(int _pinNumber, void(*_f)(), int _delay, int _pinMode = INPUT_PULLUP, int _pinState = HIGH)
     {
         pinNumber        = _pinNumber;
         buttonCallback   = _f;
@@ -21,17 +41,19 @@ public:
         lastButtonState  = LOW;
         buttonHandled    = false;
 
-        setupButton_InternalPullup_High();
+        setPinMode(_pinMode);
+        setPinState(_pinState);
     }
 
     ~DebouncedButton() { };
 
-    void setupButton_InternalPullup_High()
-    {
-        pinMode(pinNumber, INPUT_PULLUP);
-        digitalWrite(pinNumber, HIGH);
-    }
-
+    /* PUBLIC ACCESSORS                                    */
+    void putHigh()              { setPinState(HIGH);        }
+    void putLow()               { setPinState(LOW);         }
+    void setAsInput()           { setPinMode(INPUT);        }
+    void setAsInput_Pullup()    { setPinMode(INPUT_PULLUP); }
+    void setAsOutput()          { setPinMode(OUTPUT);       }
+    
     void checkButton();
 
 };
