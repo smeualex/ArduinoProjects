@@ -13,7 +13,6 @@
 
 //////////////////////////////////////////
 // DELAY VALUES
-//////////////////////////////////////////
 
 /* delay to check button presses in ms  */
 #define DEBOUNCING_DELAY          50
@@ -23,3 +22,15 @@
 #define GAME_SPEED                150
 
 #define JOYSTICK_SW_CHECK_DELAY   25
+
+//////////////////////////////////////////
+// DELAY VALUES
+
+enum GameState {
+    INVALID,
+    RESTARTED,
+    RUNNING,
+    STOPPED,
+    GAMEOVER,
+    GAMEOVER_FLASH_END_ANIMATION
+};

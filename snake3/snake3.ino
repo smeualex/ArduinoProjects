@@ -24,6 +24,9 @@ Components:
 
     Program snake3 size: 8,712 bytes (used 30% of a 28,672 byte maximum) (2.52 secs)
     Minimum Memory Usage: 529 bytes (21% of a 2560 byte maximum)
+
+    Program snake3 size: 9,818 bytes (used 34% of a 28,672 byte maximum) (2.95 secs)
+    Minimum Memory Usage: 575 bytes (22% of a 2560 byte maximum)
 */
 
 #include "globalConstants.h"
@@ -42,7 +45,7 @@ TimedAction checkPot_action  (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
 TimedAction joystickSW_action(JOYSTICK_SW_CHECK_DELAY, joystickSwCheck);
 TimedAction gameStep_action  (GAME_SPEED, performGameStep);
 
-boolean gameRunning = true;
+GameState gameState;
 
 TimedAction t1(100, f1);
 TimedAction t2(110, f2);
@@ -51,12 +54,16 @@ TimedAction t4(130, f4);
 
 void setup()
 {
+    // invalid untill setup is finished
+    gameState = GameState::INVALID;
     // brightness controll
     pinMode(BRIGHTNESS_CONTROLL_POT, INPUT);
     // init the led displays
     ledMatrix.startUp();
     //
     spawnFood();
+    // start the game
+    gameState = GameState::RUNNING;
 }
 
 
@@ -65,16 +72,34 @@ void loop()
     checkPot_action.check();
     joystickSW_action.check();
 
-    if (gameRunning)
+    switch (gameState)
     {
+    case GameState::RUNNING:
         gameStep_action.check();
-    }
-    else
-    {
+        break;
+
+    case GameState::RESTARTED:
+        gameState = GameState::RUNNING;
+        ledMatrix.resetLedState();
+        snake.resetSnake();
+        spawnFood();
+        break;
+
+    case GameState::GAMEOVER_FLASH_END_ANIMATION:
+        flashEndAnimation();
+        gameState = GameState::GAMEOVER;
+        break;
+
+    case GameState::GAMEOVER:
         t1.check();
         t2.check();
         t3.check();
         t4.check();
+        break;
+
+    case GameState::STOPPED:
+        ledMatrix.clearDisplay(0);
+        break;
     }
 }
 
@@ -90,7 +115,7 @@ void joystickSwCheck()
 
 void performGameStep()
 {
-    if (gameRunning)
+    if (gameState == GameState::RUNNING)
     {
         /* GET DIRECTION AND MOVE SNAKE */
         snake.moveSnake(joystick.getDirection());
@@ -105,25 +130,28 @@ void performGameStep()
         /* CHECK FOR END-GAME CONDITION */
         if (snake.eatsTail())
         {
-            gameRunning = false;
-            flashEndAnimation();
+            gameState = GameState::GAMEOVER_FLASH_END_ANIMATION;
         }
     }
 }
 
+///////////////////////////////////////////////
+// JOYSTICK SWITCH CALLBACK
+//
+// Stop the game if it's running
+// Restart it if... anything else
+//
 void CB_startStopGame()
 {
-    gameRunning = !gameRunning;
+    switch (gameState)
+    {
+    case GameState::RUNNING:
+        gameState = GameState::STOPPED;
+        break;
 
-    if (gameRunning == false)
-    {
-        ledMatrix.clearDisplay(0);
-    }
-    else
-    {
-        ledMatrix.resetLedState();
-        snake.resetSnake();
-        spawnFood();
+    default:
+        gameState = GameState::RESTARTED;
+        break;
     }
 }
 
