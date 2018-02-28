@@ -88,6 +88,7 @@
     <ClInclude Include="movement.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Snake.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="TimedAction.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="__vm\.snake3.vsarduino.h" />
@@ -98,6 +99,7 @@
     <ClCompile Include="Joystick.cpp" />
     <ClCompile Include="LedMatrix.cpp" />
     <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TimedAction.cpp" />
   </ItemGroup>
   <PropertyGroup>
@@ -106,4 +108,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM25" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -32,12 +32,14 @@ Components:
 #include "globalConstants.h"
 
 #include "Snake.h"
+#include "Sound.h"
 #include "Joystick.h"
 #include "LedMatrix.h"
 #include "TimedAction.h"
 
 Snake snake;
 Point cookie;
+Sound speaker(SPEAKER_PIN);
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
 Joystick  joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
 
@@ -51,6 +53,10 @@ TimedAction t1(100, f1);
 TimedAction t2(110, f2);
 TimedAction t3(120, f3);
 TimedAction t4(130, f4);
+
+char note[] = "C4";
+int  beat = 4;
+int  tempo = 60;
 
 void setup()
 {
@@ -121,7 +127,10 @@ void performGameStep()
         snake.moveSnake(joystick.getDirection());
         /* IS WE EATING A COOKIE?!      */
         if (snake.eatsCookie(cookie))
+        {
+            speaker.playNote(note, beat * tempo);
             spawnFood();
+        }
         else
             snake.removeLastSegment();
         snake.addNewSegment();

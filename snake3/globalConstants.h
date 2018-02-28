@@ -10,6 +10,8 @@
 #define JOYSTICK_SW A1
 /* POTENTIOMETER PIN                    */
 #define BRIGHTNESS_CONTROLL_POT A0
+/* SPEAKER PIN                          */
+#define SPEAKER_PIN 6
 
 //////////////////////////////////////////
 // DELAY VALUES
