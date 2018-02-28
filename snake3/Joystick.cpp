@@ -1,30 +1,37 @@
 #include "Joystick.h"
 #include "Arduino.h"
 
+int Joystick::readAxis(int axis)
+{
+    if (axis != pin_X && axis != pin_Y)
+        return 0;
+
+    int normValue = map(analogRead(axis), 0, 1023, 0, norm_range);
+    int distance_from_center = normValue - center;
+    
+    if (abs(distance_from_center) < move_threshold)
+        distance_from_center = 0;
+    
+    return distance_from_center;
+}
+
 moveDirection Joystick::getDirection()
 {
-    int x_raw = analogRead(pin_X);
-    int y_raw = analogRead(pin_Y);
-    int x = map(x_raw, 0, 1023, 1, 11);
-    int y = map(y_raw, 0, 1023, 1, 11);
+    int x = readAxis(pin_X);
+    int y = readAxis(pin_Y);
 
-    char logBuf[256];
-    sprintf(logBuf, "X: %4d - %2d  |  Y: %4d - %2d",
-        x_raw, x, y_raw, y);
-    Serial.println(logBuf);
-
-    if( x == 5 && (y ==5 || y == 6))
+    if( x == y )
         return moveDirection::KEEP_CURRENT;
 
-    if( x > 5 && (1 <= y && y <= 11))
+    if (x > 0 && x > y)
         return moveDirection::RIGHT;
 
-    if( x < 5 && (1 <= y && y <= 11))
+    if (x < 0 && x < y)
         return moveDirection::LEFT;
 
-    if( y > 6 && (0 <= x && x <= 9))
+    if (y > 0 && y > x)
         return moveDirection::DOWN;
 
-    if (y < 5 && (0 <= x && x <= 9))
+    if (y < 0 && y < x)
         return moveDirection::UP;
 }
