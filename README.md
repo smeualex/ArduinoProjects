@@ -12,3 +12,6 @@ Each project has its own README.md file so please refer to them for more details
 # Project List
 
 1. Environment Monitor
+
+2. Snake 3
+> Just had to make this popular game on an Arduino and an 8x8 led matrix display.
