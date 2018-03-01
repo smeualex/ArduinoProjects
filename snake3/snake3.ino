@@ -27,6 +27,9 @@ Components:
 
     Program snake3 size: 9,818 bytes (used 34% of a 28,672 byte maximum) (2.95 secs)
     Minimum Memory Usage: 575 bytes (22% of a 2560 byte maximum)
+
+    Program snake3 size: 11,404 bytes (used 40% of a 28,672 byte maximum) (2.33 secs)
+    Minimum Memory Usage: 707 bytes (28% of a 2560 byte maximum)
 */
 
 #include "globalConstants.h"
@@ -41,25 +44,82 @@ Snake snake;
 Point cookie;
 Sound speaker(SPEAKER_PIN);
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
-Joystick  joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
+Joystick  joystick  = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
 
-TimedAction checkPot_action  (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
-TimedAction joystickSW_action(JOYSTICK_SW_CHECK_DELAY, joystickSwCheck);
-TimedAction gameStep_action  (GAME_SPEED, performGameStep);
+TimedAction checkPot_action        (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
+TimedAction joystickSW_action      (JOYSTICK_SW_CHECK_DELAY,   joystickSwCheck);
+TimedAction gameStep_action        (GAME_SPEED,                performGameStep);
+
+TimedAction gameEndAnimation_action(25, flashEndAnimation, postGameEndAnimation, 7);
 
 GameState gameState;
 
-TimedAction t1(100, f1);
-TimedAction t2(110, f2);
-TimedAction t3(120, f3);
-TimedAction t4(130, f4);
+TimedAction endGameAnimation_1( 50, randomLedFlasher_1);
+TimedAction endGameAnimation_2(110, randomLedFlasher_2);
+TimedAction endGameAnimation_3(220, randomLedFlasher_3);
+TimedAction endGameAnimation_4(330, randomLedFlasher_4);
 
-char note[] = "C4";
+char note[] = "A4";
 int  beat = 4;
 int  tempo = 60;
 
+///////////////////////////////////////////////////////
+// TESTS
+///////////////////////////////////////////////////////
+TimedAction t1(250, f1, post_f1, 10);
+TimedAction t2(250, f2, post_f2, 10);
+
+int i1 = 1;
+int i2 = 1;
+char logBuf[256];
+
+int ledState = 1;
+bool canChangeLedState = true;
+
+void f1()
+{
+    if (canChangeLedState = true)
+    {
+        canChangeLedState = false;
+        ledState = !ledState;
+        ledMatrix.setLed(0, 4, 4, ledState);
+        canChangeLedState = true;
+    }
+
+    sprintf(logBuf, " > 1   < [%5d] - %8d", i1++, millis());
+    Serial.println(logBuf);
+}
+
+void post_f1()
+{
+    Serial.println(" > 1 DONE <");
+}
+void f2()
+{
+    if (canChangeLedState = true)
+    {
+        canChangeLedState = false;
+        ledState = !ledState;
+        ledMatrix.setLed(0, 4, 4, ledState);
+        canChangeLedState = true;
+    }
+
+    sprintf(logBuf, " >   2 < [%5d] - %8d", i2++, millis());
+    Serial.println(logBuf); 
+}
+
+void post_f2()
+{
+    Serial.println(" > 2 DONE <");
+}
+///////////////////////////////////////////////////////
+
 void setup()
 {
+    t1.disable();
+    t2.disable();
+
+    Serial.begin(115200);
     // invalid untill setup is finished
     gameState = GameState::INVALID;
     // brightness controll
@@ -70,6 +130,9 @@ void setup()
     spawnFood();
     // start the game
     gameState = GameState::RUNNING;
+
+    t1.enable();
+    t2.enable();
 }
 
 
@@ -77,6 +140,9 @@ void loop()
 {
     checkPot_action.check();
     joystickSW_action.check();
+
+    t1.check();
+    t2.check();
 
     switch (gameState)
     {
@@ -86,21 +152,21 @@ void loop()
 
     case GameState::RESTARTED:
         gameState = GameState::RUNNING;
+        gameEndAnimation_action.reset();
         ledMatrix.resetLedState();
         snake.resetSnake();
         spawnFood();
         break;
 
     case GameState::GAMEOVER_FLASH_END_ANIMATION:
-        flashEndAnimation();
-        gameState = GameState::GAMEOVER;
+        gameEndAnimation_action.check();
         break;
 
     case GameState::GAMEOVER:
-        t1.check();
-        t2.check();
-        t3.check();
-        t4.check();
+        endGameAnimation_1.check();
+        endGameAnimation_2.check();
+        endGameAnimation_3.check();
+        endGameAnimation_4.check();
         break;
 
     case GameState::STOPPED:
@@ -128,7 +194,7 @@ void performGameStep()
         /* IS WE EATING A COOKIE?!      */
         if (snake.eatsCookie(cookie))
         {
-            speaker.playNote(note, beat * tempo);
+            speaker.playNote(SND_COOKIE_EATEN_TONE, SND_COOKIE_EATEN_DELAY);
             spawnFood();
         }
         else
@@ -175,33 +241,41 @@ void spawnFood()
 
 void flashEndAnimation()
 {
-    for (int r = 0; r < 7; r++)
-    {
-        for (int i = 0; i < snake.getLength(); i++)
-            ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 0);
-        delay(200);
-        for (int i = 0; i < snake.getLength(); i++)
-            ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 1);
-        delay(200);
-    }
+    for (int i = 0; i < snake.getLength(); i++)
+        ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 0);
+    delay(200);
+    
+    for (int i = 0; i < snake.getLength(); i++)
+        ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 1);
+    delay(200);
 }
 
-void f1()
+void postGameEndAnimation()
+{
+    gameState = GameState::GAMEOVER;
+}
+
+void randomLedFlasher_1()
 {
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }
 
-void f2()
+void randomLedFlasher_2()
 {
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }
 
-void f3()
+void randomLedFlasher_3()
 {
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }
 
-void f4()
+void randomLedFlasher_4()
 {
-    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
+    ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); 
 }

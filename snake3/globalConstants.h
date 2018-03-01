@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Sound.h"
+
 /* DISPLAY MATRIX CONNECTION PINS       */
 #define DIN 2
 #define CS  3
@@ -26,8 +28,11 @@
 #define JOYSTICK_SW_CHECK_DELAY   25
 
 //////////////////////////////////////////
-// DELAY VALUES
-
+// SOUND
+#define SND_COOKIE_EATEN_DELAY    100
+#define SND_COOKIE_EATEN_TONE     NOTE_F5
+//////////////////////////////////////////
+// GAME STATE
 enum GameState {
     INVALID,
     RESTARTED,
@@ -36,3 +41,4 @@ enum GameState {
     GAMEOVER,
     GAMEOVER_FLASH_END_ANIMATION
 };
+//////////////////////////////////////////
