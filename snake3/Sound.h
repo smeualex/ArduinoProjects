@@ -3,58 +3,102 @@
 #include "Arduino.h"
 #include <avr/pgmspace.h>
 
-const char Ds4Eb4[] PROGMEM = "D#4/Eb4";
-const char E4[]     PROGMEM = "E4";
-const char F4[]     PROGMEM = "F4";
-const char Fs4Gb4[] PROGMEM = "F#4/Gb4";
-const char G4[]     PROGMEM = "G4";
-const char Gs4Ab4[] PROGMEM = "G#4/Ab4";
-const char A_4[]     PROGMEM = "A4";
-const char As4Bb4[] PROGMEM = "A#4/Bb4";
-const char B4[]     PROGMEM = "B4";
-const char C5[]     PROGMEM = "C5";
-const char Cs5Db5[] PROGMEM = "C#5/Db5";
-const char D5[]     PROGMEM = "D5";
-const char Ds5Eb5[] PROGMEM = "D#5/Eb5";
-const char E5[]     PROGMEM = "E5";
-const char F5[]     PROGMEM = "F5";
-const char Fs5Gb5[] PROGMEM = "F#5/Gb5";
-const char G5[]     PROGMEM = "G5";
-const char Gs5Ab5[] PROGMEM = "G#5/Ab5";
-const char A_5[]     PROGMEM = "A5";
-const char As5Bb5[] PROGMEM = "A#5/Bb5";
-const char B5[]     PROGMEM = "B5";
-const char C6[]     PROGMEM = "C6";
-const char Cs6Db6[] PROGMEM = "C#6/Db6";
-const char D6[]     PROGMEM = "D6";
-const char Ds6Eb6[] PROGMEM = "D#6/Eb6";
-const char E6[]     PROGMEM = "E6";
-const char F6[]     PROGMEM = "F6";
-const char Fs6Gb6[] PROGMEM = "Fs6Gb6";
-const char G6[]     PROGMEM = "G6";
-const char Rest[]   PROGMEM = "rest";
-
-const static char* const noteNames[] PROGMEM = { Ds4Eb4, E4, F4, Fs4Gb4,G4,Gs4Ab4,A_4,As4Bb4,B4,C5,Cs5Db5,D5,Ds5Eb5,E5,F5,Fs5Gb5,G5,Gs5Ab5,A_5,As5Bb5,B5,C6,Cs6Db6,D6,Ds6Eb6,E6,F6,Fs6Gb6,G6, Rest };
-
-const static int tones[] PROGMEM =
-{ 1607, 1516, 1431, 1351, 1275,
-1203, 1136, 1072, 1012, 955,
-901, 851, 803, 758, 715, 675,
-637, 601, 568, 536, 506, 477,
-450, 425, 401, 379, 357, 337, 318 };
+#define NOTE_B0  31
+#define NOTE_C1  33
+#define NOTE_CS1 35
+#define NOTE_D1  37
+#define NOTE_DS1 39
+#define NOTE_E1  41
+#define NOTE_F1  44
+#define NOTE_FS1 46
+#define NOTE_G1  49
+#define NOTE_GS1 52
+#define NOTE_A1  55
+#define NOTE_AS1 58
+#define NOTE_B1  62
+#define NOTE_C2  65
+#define NOTE_CS2 69
+#define NOTE_D2  73
+#define NOTE_DS2 78
+#define NOTE_E2  82
+#define NOTE_F2  87
+#define NOTE_FS2 93
+#define NOTE_G2  98
+#define NOTE_GS2 104
+#define NOTE_A2  110
+#define NOTE_AS2 117
+#define NOTE_B2  123
+#define NOTE_C3  131
+#define NOTE_CS3 139
+#define NOTE_D3  147
+#define NOTE_DS3 156
+#define NOTE_E3  165
+#define NOTE_F3  175
+#define NOTE_FS3 185
+#define NOTE_G3  196
+#define NOTE_GS3 208
+#define NOTE_A3  220
+#define NOTE_AS3 233
+#define NOTE_B3  247
+#define NOTE_C4  262
+#define NOTE_CS4 277
+#define NOTE_D4  294
+#define NOTE_DS4 311
+#define NOTE_E4  330
+#define NOTE_F4  349
+#define NOTE_FS4 370
+#define NOTE_G4  392
+#define NOTE_GS4 415
+#define NOTE_A4  440
+#define NOTE_AS4 466
+#define NOTE_B4  494
+#define NOTE_C5  523
+#define NOTE_CS5 554
+#define NOTE_D5  587
+#define NOTE_DS5 622
+#define NOTE_E5  659
+#define NOTE_F5  698
+#define NOTE_FS5 740
+#define NOTE_G5  784
+#define NOTE_GS5 831
+#define NOTE_A5  880
+#define NOTE_AS5 932
+#define NOTE_B5  988
+#define NOTE_C6  1047
+#define NOTE_CS6 1109
+#define NOTE_D6  1175
+#define NOTE_DS6 1245
+#define NOTE_E6  1319
+#define NOTE_F6  1397
+#define NOTE_FS6 1480
+#define NOTE_G6  1568
+#define NOTE_GS6 1661
+#define NOTE_A6  1760
+#define NOTE_AS6 1865
+#define NOTE_B6  1976
+#define NOTE_C7  2093
+#define NOTE_CS7 2217
+#define NOTE_D7  2349
+#define NOTE_DS7 2489
+#define NOTE_E7  2637
+#define NOTE_F7  2794
+#define NOTE_FS7 2960
+#define NOTE_G7  3136
+#define NOTE_GS7 3322
+#define NOTE_A7  3520
+#define NOTE_AS7 3729
+#define NOTE_B7  3951
+#define NOTE_C8  4186
+#define NOTE_CS8 4435
+#define NOTE_D8  4699
+#define NOTE_DS8 4978
 
 class Sound {
     int pin;
 public:
-    Sound(int _pin) 
-    { 
-        pin = _pin;
-    }
-
+    Sound(int _pin) { pin = _pin; }
     ~Sound() { }
 
-    void playTone(int tone, int duration);
-    void playNote(const char* note, int duration);
-    void playRest(const int duration);
+    void playNote(const unsigned int _tone, const unsigned int duration);
 };
 
