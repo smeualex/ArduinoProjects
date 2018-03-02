@@ -65,13 +65,10 @@ void TimedAction::check()
             __execute();
             if (execCounter == nExecutionsBeforeStop)
             {
-                execCounter++;
-                postExecute();
+                execCounter++;  /* incremented just to go over the limit and not to enter again this branch */
+                postExecute();  /* run the post execute callback */
+                disable();      /* disable the callbacks         */
             }
-        }
-        else
-        {
-            disable();
         }
     }
 }

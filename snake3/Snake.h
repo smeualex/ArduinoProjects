@@ -2,15 +2,16 @@
 
 #include "Point.h"
 #include "movement.h"
+#include "IMovement.h"
 
 class Snake {
     Point head;
     Point segments[64];
     byte  length;
     moveDirection currentDirection;
-
+    IMovement*    moveCtrlr;
 public:
-    Snake();
+    Snake(IMovement* _moveCtrlr);
     ~Snake();
 
     void resetSnake();
@@ -20,7 +21,7 @@ public:
     void    addNewSegment();
     boolean segmentExists(Point p);
     
-    void    moveSnake(moveDirection dir);
+    void    moveSnake();
     
     boolean eatsCookie(Point cookie) { return head == cookie; }
     boolean eatsTail();

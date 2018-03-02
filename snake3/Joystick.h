@@ -1,9 +1,10 @@
 #pragma once
 #include "globalConstants.h"
-#include "movement.h"
 #include "DebouncedButton.h"
+#include "IMovement.h"
+#include "movement.h"
 
-class Joystick {
+class Joystick : public IMovement {
 private:
     DebouncedButton* sw;
 

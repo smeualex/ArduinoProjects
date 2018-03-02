@@ -30,14 +30,9 @@ class TimedAction {
 	void setInterval( unsigned long interval );
 
     bool isActive() { return active; }
-    void registerCallback(void(*function)())
-    {
-        execute = function;
-    }
-    void registerPostExecCallback(void(*function)())
-    {
-        postExecute = function;
-    }
+    unsigned long getExecutionCounter() { return execCounter; }
+    void registerCallback(void(*function)()) { execute = function; }
+    void registerPostExecCallback(void(*function)()) { postExecute = function; }
 };
 
 #endif

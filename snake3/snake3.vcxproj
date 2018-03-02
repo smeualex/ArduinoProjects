@@ -83,6 +83,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="DebouncedButton.h" />
     <ClInclude Include="globalConstants.h" />
+    <ClInclude Include="IMovement.h" />
     <ClInclude Include="Joystick.h" />
     <ClInclude Include="LedMatrix.h" />
     <ClInclude Include="movement.h" />

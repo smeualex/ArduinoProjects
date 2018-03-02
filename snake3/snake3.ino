@@ -40,86 +40,43 @@ Components:
 #include "LedMatrix.h"
 #include "TimedAction.h"
 
-Snake snake;
-Point cookie;
-Sound speaker(SPEAKER_PIN);
+//////////////////////////////////////////////////////////////////////////////////////
+// main game objects
+//
+// buzzer
+Sound     speaker(SPEAKER_PIN);
+// led matrix configured with its data pins
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
+// joystick which acts as the main movement controller
 Joystick  joystick  = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
-
-TimedAction checkPot_action        (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
-TimedAction joystickSW_action      (JOYSTICK_SW_CHECK_DELAY,   joystickSwCheck);
+// the sname object init with the movement controller
+Snake     snake(&joystick);
+// cookie position
+Point     cookie;
+//////////////////////////////////////////////////////////////////////////////////////
+// game step -> moves the snake 1 steps plus other checks
 TimedAction gameStep_action        (GAME_SPEED,                performGameStep);
-
-TimedAction gameEndAnimation_action(25, flashEndAnimation, postGameEndAnimation, 7);
-
+// potentiometer callback
+TimedAction checkPot_action        (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
+// joystick switch
+TimedAction joystickSW_action      (JOYSTICK_SW_CHECK_DELAY,   joystickSwCheck);
+//////////////////////////////////////////////////////////////////////////////////////
+// the game state and end animations 
 GameState gameState;
+TimedAction gameEndAnimation_action(25, flashEndAnimation, postGameEndAnimation, 7);
 
 TimedAction endGameAnimation_1( 50, randomLedFlasher_1);
 TimedAction endGameAnimation_2(110, randomLedFlasher_2);
 TimedAction endGameAnimation_3(220, randomLedFlasher_3);
 TimedAction endGameAnimation_4(330, randomLedFlasher_4);
+//////////////////////////////////////////////////////////////////////////////////////
 
 char note[] = "A4";
 int  beat = 4;
 int  tempo = 60;
 
-///////////////////////////////////////////////////////
-// TESTS
-///////////////////////////////////////////////////////
-TimedAction t1(250, f1, post_f1, 10);
-TimedAction t2(250, f2, post_f2, 10);
-
-int i1 = 1;
-int i2 = 1;
-char logBuf[256];
-
-int ledState = 1;
-bool canChangeLedState = true;
-
-void f1()
-{
-    if (canChangeLedState = true)
-    {
-        canChangeLedState = false;
-        ledState = !ledState;
-        ledMatrix.setLed(0, 4, 4, ledState);
-        canChangeLedState = true;
-    }
-
-    sprintf(logBuf, " > 1   < [%5d] - %8d", i1++, millis());
-    Serial.println(logBuf);
-}
-
-void post_f1()
-{
-    Serial.println(" > 1 DONE <");
-}
-void f2()
-{
-    if (canChangeLedState = true)
-    {
-        canChangeLedState = false;
-        ledState = !ledState;
-        ledMatrix.setLed(0, 4, 4, ledState);
-        canChangeLedState = true;
-    }
-
-    sprintf(logBuf, " >   2 < [%5d] - %8d", i2++, millis());
-    Serial.println(logBuf); 
-}
-
-void post_f2()
-{
-    Serial.println(" > 2 DONE <");
-}
-///////////////////////////////////////////////////////
-
 void setup()
 {
-    t1.disable();
-    t2.disable();
-
-    Serial.begin(115200);
     // invalid untill setup is finished
     gameState = GameState::INVALID;
     // brightness controll
@@ -130,9 +87,6 @@ void setup()
     spawnFood();
     // start the game
     gameState = GameState::RUNNING;
-
-    t1.enable();
-    t2.enable();
 }
 
 
@@ -140,9 +94,6 @@ void loop()
 {
     checkPot_action.check();
     joystickSW_action.check();
-
-    t1.check();
-    t2.check();
 
     switch (gameState)
     {
@@ -190,7 +141,7 @@ void performGameStep()
     if (gameState == GameState::RUNNING)
     {
         /* GET DIRECTION AND MOVE SNAKE */
-        snake.moveSnake(joystick.getDirection());
+        snake.moveSnake();
         /* IS WE EATING A COOKIE?!      */
         if (snake.eatsCookie(cookie))
         {

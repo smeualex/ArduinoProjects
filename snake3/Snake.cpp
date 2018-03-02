@@ -1,7 +1,8 @@
 #include "Snake.h"
 
-Snake::Snake()
+Snake::Snake(IMovement* _moveCtrlr)
 {
+    moveCtrlr = _moveCtrlr;
     resetSnake();
 }
 
@@ -47,8 +48,10 @@ boolean Snake::segmentExists(Point p)
     return false;
 }
 
-void Snake::moveSnake(moveDirection dir)
+void Snake::moveSnake()
 { 
+    moveDirection dir = moveCtrlr->getDirection();
+
     /* CHECK FOR OPPOSITE DIRECTIONS OR CURRENT */
     if (length == 1)
     {
