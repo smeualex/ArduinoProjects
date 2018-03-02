@@ -1,7 +1,7 @@
 #include "Joystick.h"
 #include "Arduino.h"
 
-int Joystick::readAxis(int axis)
+int JoystickCtrl::readAxis(int axis)
 {
     if (axis != pin_X && axis != pin_Y)
         return 0;
@@ -15,7 +15,7 @@ int Joystick::readAxis(int axis)
     return distance_from_center;
 }
 
-moveDirection Joystick::getDirection()
+moveDirection JoystickCtrl::getDirection()
 {
     int x = readAxis(pin_X);
     int y = readAxis(pin_Y);

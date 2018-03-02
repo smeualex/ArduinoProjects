@@ -4,7 +4,7 @@
 #include "IMovement.h"
 #include "movement.h"
 
-class Joystick : public IMovement {
+class JoystickCtrl : public IMovement {
 private:
     DebouncedButton* sw;
 
@@ -18,7 +18,7 @@ private:
     int move_threshold;
     int center;
 public:
-    Joystick(const int _x, const int _y, const int _sw, void(*sw_callback)())
+    JoystickCtrl(const int _x, const int _y, const int _sw, void(*sw_callback)())
     {
         pin_X  = _x;
         pin_Y  = _y;
@@ -31,7 +31,7 @@ public:
         center = norm_range / 2;
         move_threshold = 3;
     };
-    ~Joystick() { delete sw; sw = nullptr; };
+    ~JoystickCtrl() { delete sw; sw = nullptr; };
 
     void checkSwitch() { sw->checkButton(); }
     moveDirection getDirection();

@@ -6,7 +6,7 @@ Description: snake game on 8x8 led matrix
 
 Components:
     Arduino Micro
-    Joystick
+    JoystickCtrl
     8x8 lex matrix
 
 
@@ -30,6 +30,9 @@ Components:
 
     Program snake3 size: 11,404 bytes (used 40% of a 28,672 byte maximum) (2.33 secs)
     Minimum Memory Usage: 707 bytes (28% of a 2560 byte maximum)
+
+    Program snake3 size: 12,446 bytes (used 43% of a 28,672 byte maximum) (3.85 secs)
+    Minimum Memory Usage: 787 bytes (31% of a 2560 byte maximum)
 */
 
 #include "globalConstants.h"
@@ -40,6 +43,7 @@ Components:
 #include "LedMatrix.h"
 #include "TimedAction.h"
 
+#include "KeyboardCtrl.h"
 //////////////////////////////////////////////////////////////////////////////////////
 // main game objects
 //
@@ -48,8 +52,10 @@ Sound     speaker(SPEAKER_PIN);
 // led matrix configured with its data pins
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
 // joystick which acts as the main movement controller
-Joystick  joystick  = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
-// the sname object init with the movement controller
+JoystickCtrl joystick  = JoystickCtrl(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
+KeyboardCtrl keybCtrl;
+// the snake object init with the movement controller
+// Snake     snake(&keybCtrl);
 Snake     snake(&joystick);
 // cookie position
 Point     cookie;
@@ -140,8 +146,10 @@ void performGameStep()
 {
     if (gameState == GameState::RUNNING)
     {
-        /* GET DIRECTION AND MOVE SNAKE */
+        /* MOVE SNAKE                   */
+        // movement is handled by the snake via the movement controller
         snake.moveSnake();
+
         /* IS WE EATING A COOKIE?!      */
         if (snake.eatsCookie(cookie))
         {
@@ -151,8 +159,10 @@ void performGameStep()
         else
             snake.removeLastSegment();
         snake.addNewSegment();
+
         /* UPDATE LED DISPLAY           */
         ledMatrix.display(snake, cookie);
+
         /* CHECK FOR END-GAME CONDITION */
         if (snake.eatsTail())
         {

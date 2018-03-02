@@ -5,11 +5,13 @@
 #include "IMovement.h"
 
 class Snake {
-    Point head;
-    Point segments[64];
-    byte  length;
+private:
+    Point         head;
+    Point         segments[64];
+    byte          length;
     moveDirection currentDirection;
     IMovement*    moveCtrlr;
+
 public:
     Snake(IMovement* _moveCtrlr);
     ~Snake();
