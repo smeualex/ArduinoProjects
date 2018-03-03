@@ -61,20 +61,20 @@ Snake     snake(&joystick);
 Point     cookie;
 //////////////////////////////////////////////////////////////////////////////////////
 // game step -> moves the snake 1 steps plus other checks
-TimedAction gameStep_action        (GAME_SPEED,                performGameStep);
+TimedAction gameStep_action        (GAME_SPEED,                CB_performGameStep);
 // potentiometer callback
-TimedAction checkPot_action        (POTENTIOMETER_CHECK_DELAY, potentiometerCheck);
+TimedAction checkPot_action        (POTENTIOMETER_CHECK_DELAY, CB_potentiometerCheck);
 // joystick switch
-TimedAction joystickSW_action      (JOYSTICK_SW_CHECK_DELAY,   joystickSwCheck);
+TimedAction joystickSW_action      (JOYSTICK_SW_CHECK_DELAY,   CB_joystickSwCheck);
 //////////////////////////////////////////////////////////////////////////////////////
 // the game state and end animations 
 GameState gameState;
-TimedAction gameEndAnimation_action(25, flashEndAnimation, postGameEndAnimation, 7);
+TimedAction gameEndAnimation_action(25, CB_flashEndAnimation, CB_postGameEndAnimation, 7);
 
-TimedAction endGameAnimation_1( 50, randomLedFlasher_1);
-TimedAction endGameAnimation_2(110, randomLedFlasher_2);
-TimedAction endGameAnimation_3(220, randomLedFlasher_3);
-TimedAction endGameAnimation_4(330, randomLedFlasher_4);
+TimedAction endGameAnimation_1( 50, CB_randomLedFlasher_1);
+TimedAction endGameAnimation_2(110, CB_randomLedFlasher_2);
+TimedAction endGameAnimation_3(220, CB_randomLedFlasher_3);
+TimedAction endGameAnimation_4(330, CB_randomLedFlasher_4);
 //////////////////////////////////////////////////////////////////////////////////////
 
 char note[] = "A4";
@@ -132,17 +132,17 @@ void loop()
     }
 }
 
-void potentiometerCheck()
+void CB_potentiometerCheck()
 {
     ledMatrix.setLedIntensity(map(analogRead(BRIGHTNESS_CONTROLL_POT), 0, 1023, 1, 15));
 }
 
-void joystickSwCheck()
+void CB_joystickSwCheck()
 {
     joystick.checkSwitch();
 }
 
-void performGameStep()
+void CB_performGameStep()
 {
     if (gameState == GameState::RUNNING)
     {
@@ -200,7 +200,7 @@ void spawnFood()
     } while (snake.segmentExists(cookie));
 }
 
-void flashEndAnimation()
+void CB_flashEndAnimation()
 {
     for (int i = 0; i < snake.getLength(); i++)
         ledMatrix.setLed(0, 7-snake[i].x, 7-snake[i].y, 0);
@@ -211,29 +211,29 @@ void flashEndAnimation()
     delay(200);
 }
 
-void postGameEndAnimation()
+void CB_postGameEndAnimation()
 {
     gameState = GameState::GAMEOVER;
 }
 
-void randomLedFlasher_1()
+void CB_randomLedFlasher_1()
 {
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }
 
-void randomLedFlasher_2()
+void CB_randomLedFlasher_2()
 {
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }
 
-void randomLedFlasher_3()
+void CB_randomLedFlasher_3()
 {
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2);
 }
 
-void randomLedFlasher_4()
+void CB_randomLedFlasher_4()
 {
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
     ledMatrix.setLed(0, random(8), random(8), random(1000) % 2); delay(5);
