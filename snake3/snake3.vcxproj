@@ -89,7 +89,7 @@
     <ClInclude Include="globalConstants.h" />
     <ClInclude Include="IMovement.h" />
     <ClInclude Include="Joystick.h" />
-    <ClInclude Include="KeyboardCtrl.h" />
+    <ClInclude Include="SerialCtrl.h" />
     <ClInclude Include="LedMatrix.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Snake.h" />
@@ -102,7 +102,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="DebouncedButton.cpp" />
     <ClCompile Include="Joystick.cpp" />
-    <ClCompile Include="KeyboardCtrl.cpp" />
+    <ClCompile Include="SerialCtrl.cpp" />
     <ClCompile Include="LedMatrix.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Sound.cpp" />

@@ -1,10 +1,10 @@
 #pragma once
 #include "IMovement.h"
 
-class KeyboardCtrl : public IMovement {
+class SerialCtrl : public IMovement {
 public:
-    KeyboardCtrl() { };
-    ~KeyboardCtrl() { };
+    SerialCtrl() { };
+    ~SerialCtrl() { };
     /* IMovement implementation */
     moveDirection getDirection();
 };

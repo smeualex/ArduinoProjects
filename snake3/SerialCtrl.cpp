@@ -1,7 +1,7 @@
 #include "Arduino.h"
-#include "KeyboardCtrl.h"
+#include "SerialCtrl.h"
 
-moveDirection KeyboardCtrl::getDirection()
+moveDirection SerialCtrl::getDirection()
 {
     switch (Serial.read())
     {

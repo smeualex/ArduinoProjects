@@ -33,6 +33,9 @@ Components:
 
     Program snake3 size: 12,446 bytes (used 43% of a 28,672 byte maximum) (3.85 secs)
     Minimum Memory Usage: 787 bytes (31% of a 2560 byte maximum)
+
+    Program snake3 size: 12,186 bytes (used 43% of a 28,672 byte maximum) (5.40 secs)
+    Minimum Memory Usage: 702 bytes (27% of a 2560 byte maximum)
 */
 
 #include "globalConstants.h"
@@ -43,7 +46,7 @@ Components:
 #include "LedMatrix.h"
 #include "TimedAction.h"
 
-#include "KeyboardCtrl.h"
+#include "SerialCtrl.h"
 //////////////////////////////////////////////////////////////////////////////////////
 // main game objects
 //
@@ -53,7 +56,7 @@ Sound     speaker(SPEAKER_PIN);
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
 // joystick which acts as the main movement controller
 JoystickCtrl joystickCtrl  = JoystickCtrl(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
-KeyboardCtrl keybCtrl;
+SerialCtrl keybCtrl;
 
 Snake     snake;
 // cookie position
