@@ -1,9 +1,27 @@
 #include "Snake.h"
 
-Snake::Snake(IMovement* _moveCtrlr)
+byte Snake::controllersAttached = 0;
+
+moveDirection Snake::getDirection()
 {
-    moveCtrlr = _moveCtrlr;
-    resetSnake();
+    moveDirection m = moveDirection::KEEP_CURRENT;
+    for (int i = 0; i < controllersAttached; i++)
+    {
+        m = moveCtrlr[i]->getDirection();
+        if (m != moveDirection::KEEP_CURRENT &&
+            m != moveDirection::STILL)
+            return m;
+    }
+    return m;
+}
+
+void Snake::registerMoveController(IMovement * _moveCtrl)
+{
+    if (controllersAttached < MAX_MOVEMENT_CTRLS)
+    {
+        if(_moveCtrl != NULL)
+            moveCtrlr[controllersAttached++] = _moveCtrl;
+    }
 }
 
 void Snake::resetSnake()
@@ -19,9 +37,6 @@ void Snake::resetSnakeSegments()
     for (int i = 0; i < length; i++)
         segments[i].x = segments[i].y = 255;
 }
-
-Snake::~Snake()
-{ }
 
 void Snake::removeLastSegment()
 {
@@ -50,8 +65,7 @@ boolean Snake::segmentExists(Point p)
 
 void Snake::moveSnake()
 { 
-    moveDirection dir = moveCtrlr->getDirection();
-
+    moveDirection dir = this->getDirection();
     /* CHECK FOR OPPOSITE DIRECTIONS OR CURRENT */
     if (length == 1)
     {

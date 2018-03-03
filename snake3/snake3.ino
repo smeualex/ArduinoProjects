@@ -52,11 +52,10 @@ Sound     speaker(SPEAKER_PIN);
 // led matrix configured with its data pins
 LedMatrix ledMatrix = LedMatrix(DIN, CLK, CS);
 // joystick which acts as the main movement controller
-JoystickCtrl joystick  = JoystickCtrl(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
+JoystickCtrl joystickCtrl  = JoystickCtrl(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_SW, CB_startStopGame);
 KeyboardCtrl keybCtrl;
-// the snake object init with the movement controller
-// Snake     snake(&keybCtrl);
-Snake     snake(&joystick);
+
+Snake     snake;
 // cookie position
 Point     cookie;
 //////////////////////////////////////////////////////////////////////////////////////
@@ -83,12 +82,18 @@ int  tempo = 60;
 
 void setup()
 {
+    Serial.begin(115200);
     // invalid untill setup is finished
     gameState = GameState::INVALID;
     // brightness controll
     pinMode(BRIGHTNESS_CONTROLL_POT, INPUT);
     // init the led displays
     ledMatrix.startUp();
+    // register move controllers
+    snake.registerMoveController(&joystickCtrl);
+    snake.registerMoveController(&keybCtrl);
+    // reset the snake
+    snake.resetSnake();
     //
     spawnFood();
     // start the game
@@ -100,7 +105,6 @@ void loop()
 {
     checkPot_action.check();
     joystickSW_action.check();
-
     switch (gameState)
     {
     case GameState::RUNNING:
@@ -139,7 +143,7 @@ void CB_potentiometerCheck()
 
 void CB_joystickSwCheck()
 {
-    joystick.checkSwitch();
+    joystickCtrl.checkSwitch();
 }
 
 void CB_performGameStep()
