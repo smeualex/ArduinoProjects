@@ -1,5 +1,14 @@
 #pragma once
-#include "movement.h"
+
+enum moveDirection {
+    UP = 0,
+    RIGHT,
+    DOWN,
+    LEFT,
+    KEEP_CURRENT,
+    STILL
+};
+
 
 class IMovement {
 public:
