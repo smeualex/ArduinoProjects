@@ -4,6 +4,9 @@
 
 class LedMatrix : public LedControl
 {
+#define LM_MAX_LED_INTENSITY 15
+#define LM_MIN_LED_INTENSITY 1
+
     int  ledIntensity;
     byte leds[8];
 public:

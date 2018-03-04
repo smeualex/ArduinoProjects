@@ -5,7 +5,7 @@
 class Point 
 {
 public:
-    Point()                                 { x = 255; y = 255;                   }
+    Point()                                 { x = 0;  y = 0;                      }
     Point(byte pX, byte pY)                 { x = pX; y = pY;                     }
     
     Point& operator=(Point p)               { x = p.x; y = p.y; return *this;     }

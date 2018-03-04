@@ -9,7 +9,7 @@ private:
     Point         head;
     Point         segments[64];
     byte          length;
-    moveDirection currentDirection;
+    IMovement::moveDirection currentDirection;
     
     /* Have a max. of 3 controllers attached             */
     /* They are checked in the order they are registered */
@@ -18,15 +18,15 @@ private:
     /*     2. Serial Controller                          */
     static byte   controllersAttached;
     IMovement*    moveCtrlr[MAX_MOVEMENT_CTRLS];
-    moveDirection getDirection();
-
+    IMovement::moveDirection getDirection();
+    /* Debugging helper function - prints to Serial      */
+    void          printSnakeSegments(const char* operation);
 public:
     Snake() { };
     ~Snake() { };
     void registerMoveController(IMovement* _moveCtrl);
     /* SNAKE RESET FUNCTIONS                            */
     void    resetSnake();
-    void    resetSnakeSegments();
     /* MOVEMENT AND POSITION HANDLING                   */
     void    removeLastSegment();
     void    addNewSegment();
@@ -37,7 +37,7 @@ public:
     /* GETTERS                                          */
     Point         getHead()   { return head; }
     byte          getLength() { return length; }
-    moveDirection getCurrentMovingDirection() { return currentDirection; }
+    IMovement::moveDirection getCurrentMovingDirection() { return currentDirection; }
     /* OPERATORS                                        */
     Point& operator[] (int i)
     {

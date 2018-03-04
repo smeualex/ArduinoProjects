@@ -15,23 +15,23 @@ int JoystickCtrl::readAxis(int axis)
     return distance_from_center;
 }
 
-moveDirection JoystickCtrl::getDirection()
+IMovement::moveDirection JoystickCtrl::getDirection()
 {
     int x = readAxis(pin_X);
     int y = readAxis(pin_Y);
 
     if( x == y )
-        return moveDirection::KEEP_CURRENT;
+        return IMovement::moveDirection::KEEP_CURRENT;
 
     if (x > 0 && x > y)
-        return moveDirection::RIGHT;
+        return IMovement::moveDirection::RIGHT;
 
     if (x < 0 && x < y)
-        return moveDirection::LEFT;
+        return IMovement::moveDirection::LEFT;
 
     if (y > 0 && y > x)
-        return moveDirection::DOWN;
+        return IMovement::moveDirection::DOWN;
 
     if (y < 0 && y < x)
-        return moveDirection::UP;
+        return IMovement::moveDirection::UP;
 }

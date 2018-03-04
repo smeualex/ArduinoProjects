@@ -33,6 +33,6 @@ public:
     ~JoystickCtrl() { delete sw; sw = nullptr; };
 
     void checkSwitch() { sw->checkButton(); }
-    moveDirection getDirection();
+    IMovement::moveDirection getDirection();
 };
 

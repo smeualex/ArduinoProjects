@@ -1,7 +1,7 @@
 /*
 Name:		 snake3.ino
 Created:	 27/02/2018 12:24:37 PM
-Author:	     asmeu
+Author:	     smeul
 Description: snake game on 8x8 led matrix
 
 Components:
@@ -164,7 +164,9 @@ void CB_performGameStep()
             spawnFood();
         }
         else
+        {
             snake.removeLastSegment();
+        }
         snake.addNewSegment();
 
         /* UPDATE LED DISPLAY           */
