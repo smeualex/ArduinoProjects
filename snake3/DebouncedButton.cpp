@@ -27,7 +27,7 @@ void DebouncedButton::checkButton()
     if (lastButtonState == LOW)
     {
         // button is already handled => return
-        if (true == buttonHandled)
+        if (true == buttonHandled && callbackMethod == CallbackMethod::ONCE_ON_CLICK_DOWN)
             return;
         /* CALL THE CALLBACK :) */
         buttonCallback();

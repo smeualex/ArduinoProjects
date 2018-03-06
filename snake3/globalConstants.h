@@ -34,11 +34,12 @@
 //////////////////////////////////////////
 // GAME STATE
 enum GameState {
-    INVALID,
-    RESTARTED,
-    RUNNING,
-    STOPPED,
-    GAMEOVER,
-    GAMEOVER_FLASH_END_ANIMATION
+    INVALID,                        // initial state untill setup() is done
+    RESTARTED,                      // after a restart has occured and game is restarted
+    RUNNING,                        // normal running mode
+    STOPPED,                        // stopped by button (forced)
+    GAMEOVER,                       // game over
+    GAMEOVER_FLASH_END_ANIMATION,   // game over with snake flash animation
+    TEST_ON                         // only for testing purposes and debug
 };
 //////////////////////////////////////////

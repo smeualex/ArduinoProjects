@@ -13,6 +13,14 @@
 #include "Arduino.h"
 
 class DebouncedButton {
+
+public:
+    enum CallbackMethod {
+        ONCE_ON_CLICK_DOWN,
+        // ONCE_ON_CLICK_UP, // --> ignored for now
+        CONTINUOUS
+    };
+
 private:
     int pinNumber;                  /* arduino pin number where the button is connected   */
     void(*buttonCallback)();        /* callback when the button is pressed                */
@@ -22,6 +30,7 @@ private:
     unsigned long lastDebounceTime; /* the last time the output pin was toggled           */
     unsigned long debounceDelay;    /* the debounce time; increase if the output flickers */
     bool buttonHandled;             /* used internally when button's action is handled    */
+    CallbackMethod callbackMethod;
 
     void setPinMode(int _pinMode)
     {
@@ -36,17 +45,12 @@ private:
     }
 
 public:
-    enum CallbackMethod {
-        ONCE_ON_CLICK_DOWN,
-        ONCE_ON_CLICK_UP,
-        CONTINUOUS
-    };
-
     DebouncedButton(int _pinNumber, 
                     void(*_f)(), 
                     int _delay, 
                     int _pinMode = INPUT_PULLUP, 
-                    int _pinState = HIGH)
+                    int _pinState = HIGH,
+                    CallbackMethod _callbackMethod = CallbackMethod::ONCE_ON_CLICK_DOWN)
     {
         pinNumber        = _pinNumber;
         buttonCallback   = _f;
@@ -54,7 +58,7 @@ public:
         lastDebounceTime = 0;
         lastButtonState  = LOW;
         buttonHandled    = false;
-
+        callbackMethod   = _callbackMethod;
         setPinMode(_pinMode);
         setPinState(_pinState);
     }
